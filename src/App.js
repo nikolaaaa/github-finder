@@ -11,6 +11,8 @@ import About from './components/pages/About';
 
 import axios from 'axios';
 
+import GithubState from './context/github/GithubState';
+
 // Styles
 import './App.css';
 
@@ -82,44 +84,46 @@ const App = () => {
 	}, []);
 
 	return (
-		<Router>
-			<div className="App">
-				<Navbar title="Github finder" icon="fab fa-github" />
+		<GithubState>
+			<Router>
+				<div className="App">
+					<Navbar title="Github finder" icon="fab fa-github" />
 
-				<div className="container">
-					<Alert alert={alert} />
+					<div className="container">
+						<Alert alert={alert} />
 
-					<Switch>
-						<Route path="/" exact render={props => (
-							<Fragment>
-								<Search
-									searchUsers={searchUsers}
-									clearUsers={onClearUsersHandler}
-									showClear={clearUsers && users.length > 0}
-									setAlert={showAlertHandler}
+						<Switch>
+							<Route path="/" exact render={props => (
+								<Fragment>
+									<Search
+										searchUsers={searchUsers}
+										clearUsers={onClearUsersHandler}
+										showClear={clearUsers && users.length > 0}
+										setAlert={showAlertHandler}
+									/>
+
+									<Users loading={loading} users={users} />
+								</Fragment>
+							)} />
+
+							<Route path="/about" exact component={About} />
+
+							<Route path="/user/:login" exact render={props => (
+								<User
+									{...props}
+									getUser={getUser}
+									getUserRepos={getUserRepos}
+									repos={repos}
+									user={user}
+									loading={loading}
 								/>
-								
-								<Users loading={loading} users={users} />
-							</Fragment>
-						)} />
+							)} />
+						</Switch>
 
-						<Route path="/about" exact component={About} />
-						
-						<Route path="/user/:login" exact render={props => (
-							<User
-								{...props}
-								getUser={getUser}
-								getUserRepos={getUserRepos}
-								repos={repos}
-								user={user}
-								loading={loading}
-							/>
-						)} />
-					</Switch>
-
+					</div>
 				</div>
-			</div>
-		</Router>
+			</Router>
+		</GithubState>
 	);
 
 }
